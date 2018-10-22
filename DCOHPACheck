@@ -19,6 +19,12 @@ then
 	echo "No block device '$choice' found.  Aborting..."
 	exit 1
 else
+	if [[ $( hdparm -I /dev/$choice 2>&1|grep SG_IO ) != '' ]]
+	then
+		echo "Device doesn't appear to support ATA commands."
+		echo "Aborting..."
+		exit 1
+	fi
 	echo "Checking for HPA (Host Protected Area)..."
 	hdparm -N /dev/$choice
 	echo ""
