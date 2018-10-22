@@ -25,10 +25,21 @@ else
 		echo "Aborting..."
 		exit 1
 	fi
-	echo "Checking for HPA (Host Protected Area)..."
-	hdparm -N /dev/$choice
-	echo ""
-	echo "Checking DCO (Device Configuration Overlay)..."
-	hdparm --dco-identify /dev/$choice
+	if [[ $( hdparm -I /dev/$choice |grep 'Host Protected Area' ) != '' ]]
+	then
+		echo "Checking for HPA (Host Protected Area)..."
+		hdparm -N /dev/$choice
+		echo ""
+	else
+		echo "Device doesn't support HPA (Host Protected Area)"
+		echo ""
+	fi
+	if [[ $( hdparm -I /dev/$choice |grep 'Device Configuration Overlay' ) != '' ]]
+	then
+		echo "Checking DCO (Device Configuration Overlay)..."
+		hdparm --dco-identify /dev/$choice
+	else
+		echo "Device doesn't support DCO (Device Configuration Overlay)"
+	fi
 fi
 
